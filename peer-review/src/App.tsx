@@ -41,26 +41,15 @@ const App = () => {
     // </Layout>
     <BrowserRouter>
       <Routes>
-        <Route path="/company">
-          <Route path=":id">
-            <Route path="login" element={<Login />} />
-            <Route path="register" element={<Register />} />
-            <Route element={<Header />}>
-              <Route path="home" element={
-                <PrivateRoute>
-                  <Home />
-                </PrivateRoute>} />
-              <Route path="my-reviews" element={
-                <PrivateRoute>
-                  <MyReviews />
-                </PrivateRoute>} />
-              <Route path="given-reviews" element={
-                <PrivateRoute>
-                  <GivenReviews />
-                </PrivateRoute>} />
-            </Route>
+        <Route path="/company/:id">
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+          <Route path="/company/:id" element={<PrivateRoute><Header /></PrivateRoute>}>
+            <Route index element={<Home />} />
+            <Route path="my-reviews" element={<MyReviews />} />
+            <Route path="given-reviews" element={<GivenReviews />} />
           </Route>
-        </Route >
+        </Route>
         <Route path="*" element={<h2>The page you are looking for is not here!</h2>} />
       </Routes>
     </BrowserRouter >

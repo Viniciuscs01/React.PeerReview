@@ -15,7 +15,7 @@ const Login = () => {
 
   useEffect(() => {
     if (jwt != "") {
-      navigate("../home");
+      navigate("../");
     }
   }, [jwt]);
 
