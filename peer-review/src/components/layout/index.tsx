@@ -1,7 +1,9 @@
-const Layout = ({ children }: any) => {
+import { Outlet } from "react-router-dom"
+
+const Layout = () => {
   return (
-    <div>
-      {children}
+    <div className="w-75 m-auto">
+      <Outlet />
     </div>
   )
 }
