@@ -1,68 +1,51 @@
-import { useEffect, useState } from 'react';
-import { Spinner } from 'react-bootstrap';
+import { useContext, useState } from 'react';
+import { Spinner, ToastContainer } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Image from 'react-bootstrap/Image';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { useLocalState } from '../../util/useLocalStorage';
+import { Link, Outlet, useParams } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
+import Toast from 'react-bootstrap/Toast'
 
 const Login = () => {
-  const navigate = useNavigate();
-  const [jwt, setJwt] = useLocalState("", "jwt");
+  let params = useParams();
+
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [show, setShow] = useState(false);
 
-  useEffect(() => {
-    if (jwt != "") {
-      navigate("../");
-    }
-  }, [jwt]);
+  const { authenticateUser, error } = useContext(AuthContext);
 
   const handleInputChange = (event: any, setState: any) => {
-    event.preventDefault();
     const target = event.target;
     setState(target.value)
   }
 
-  const handleSubmit = (event: any) => {
+  const handleSubmit = async (event: any) => {
+    setIsLoading(true);
     event.preventDefault();
-    authenticateUser();
-  }
+    await authenticateUser(username, password, params.id || "");
 
-  const authenticateUser = async () => {
-    setIsLoading(!isLoading);
-
-    const headers = new Headers();
-    headers.append("Content-Type", "application/json");
-
-    const raw = JSON.stringify({
-      "user": {
-        "email": username,
-        "password": password
-      }
-    });
-
-    var requestOptions = {
-      method: 'POST',
-      headers: headers,
-      body: raw
-    };
-
-    const response = await fetch("http://127.0.0.1:3001/login", requestOptions);
-    if (response.status == 200) {
-      const auth = response.headers.get('Authorization') || "";
-      setJwt(auth.split(" ")[1]);
-    }
+    !!error && setShow(true);
 
     setIsLoading((prev) => !prev);
   }
 
   return (
     <div className='d-flex align-items-center justify-content-center w-25 m-auto vh-100'>
+      <ToastContainer position="top-end" className="p-3" style={{ zIndex: 1 }}>
+        <Toast bg='danger' onClose={() => setShow(false)} show={show} delay={5000} autohide>
+          <Toast.Header>
+            <strong className="me-auto">Error</strong>
+            <small>11 mins ago</small>
+          </Toast.Header>
+          <Toast.Body>{error}</Toast.Body>
+        </Toast>
+      </ToastContainer>
       <Form className='w-100'>
         <Form.Group className="mb-3 text-center" controlId="formCompanyLogo">
-          <Image src="https://dummyimage.com/171x180/000/fff" roundedCircle />
+          <Image src="https://dummyimage.com/180x180/000/fff" roundedCircle />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>

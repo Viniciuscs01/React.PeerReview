@@ -1,4 +1,4 @@
-import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider, Navigate, Routes, BrowserRouter } from 'react-router-dom';
+import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register';
@@ -7,53 +7,27 @@ import PrivateRoute from './components/private-route';
 import MyReviews from './pages/MyReviews';
 import Layout from './components/layout';
 import GivenReviews from './pages/GivenReviews';
-
-// const router = createBrowserRouter(
-//   createRoutesFromElements(
-//     <Route path="/company">
-//       <Route path=":id">
-//         <Route path="login" element={<Login />} />
-//         <Route path="register" element={<Register />} />
-//         <Route element={<Header />}>
-//           <Route index element={
-//             <PrivateRoute>
-//               <Home />
-//             </PrivateRoute>} />
-//           <Route path="my-reviews" element={
-//             <PrivateRoute>
-//               <MyReviews />
-//             </PrivateRoute>} />
-//           <Route path="given-reviews" element={
-//             <PrivateRoute>
-//               <GivenReviews />
-//             </PrivateRoute>} />
-//         </Route>
-//       </Route>
-//     </Route >
-//   )
-// )
+import { AuthContextProvider } from './context/AuthContext';
 
 const App = () => {
-
   return (
-    // <Layout>
-    //   <RouterProvider router={router} />
-    // </Layout>
     <BrowserRouter>
-      <Routes>
-        <Route path="/company/:id">
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-          <Route path="/company/:id" element={<PrivateRoute><Header /></PrivateRoute>}>
-            <Route element={<Layout />}>
-              <Route index element={<Home />} />
-              <Route path="my-reviews" element={<MyReviews />} />
-              <Route path="given-reviews" element={<GivenReviews />} />
+      <AuthContextProvider>
+        <Routes>
+          <Route path="/company/:id">
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+            <Route path="/company/:id" element={<PrivateRoute><Header /></PrivateRoute>}>
+              <Route element={<Layout />}>
+                <Route index element={<Home />} />
+                <Route path="my-reviews" element={<MyReviews />} />
+                <Route path="given-reviews" element={<GivenReviews />} />
+              </Route>
             </Route>
           </Route>
-        </Route>
-        <Route path="*" element={<h2>The page you are looking for is not here!</h2>} />
-      </Routes>
+          <Route path="*" element={<h2>The page you are looking for is not here!</h2>} />
+        </Routes>
+      </AuthContextProvider>
     </BrowserRouter >
   );
 }
